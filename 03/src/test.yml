@@ -1,0 +1,23 @@
+---
+
+- name: test
+  gather_facts: false
+  hosts: all
+  vars:
+    ansible_user: ubuntu
+  become: yes
+  become_user: root
+  remote_user: ubuntu
+  tasks:
+  - name: Create directory for ssh-keys
+    file: state=directory mode=0700 dest=/root/.ssh/
+
+  - name: Adding rsa-key in /root/.ssh/authorized_keys
+    copy: src=~/.ssh/id_ed25519.pub dest=/root/.ssh/authorized_keys owner=root mode=0600
+    ignore_errors: yes
+  - name: Install Nginx Web Server on Debian Family
+    apt:
+      name: nginx
+      state: latest   
+      update_cache: yes 
+    
