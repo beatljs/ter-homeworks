@@ -12,10 +12,11 @@ resource "yandex_vpc_network" "my_net" {
 }
 
 resource "yandex_vpc_subnet" "subnet" {
-  name           = "${var.net_name}-${var.zone_name}"
-  zone           = var.zone_name
+  count = length(var.zone_cidr_name)
+  name           = "${var.net_name}-${var.zone_cidr_name[count.index].zone}"
+  zone           = var.zone_cidr_name[count.index].zone
   network_id     = yandex_vpc_network.my_net.id
-  v4_cidr_blocks = [var.cidr]
+  v4_cidr_blocks = [var.zone_cidr_name[count.index].cidr]
 }
 
 variable "net_name" {
@@ -24,10 +25,13 @@ variable "net_name" {
   description = "Network name for pass to module "
 }
 
-variable "zone_name" {
-  type = string
-  default = ""
-  description = "Zone name for pass to module "
+variable "zone_cidr_name" {
+  type = list(object({
+     zone = string
+     cidr = string
+  }))
+  default = []
+  description = "Zone and cidr name for pass to module "
 }
 
 variable "cidr" {
@@ -42,6 +46,6 @@ output "mod_net_id" {
 }
 
 output "mod_subnet_id" {
-  value = yandex_vpc_subnet.subnet.id
+  value = yandex_vpc_subnet.subnet[*].id
   description = "Output: yandex_vpc_subnet.*.id from module"
 }
