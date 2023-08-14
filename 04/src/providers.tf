@@ -4,6 +4,19 @@ terraform {
       source = "yandex-cloud/yandex"
     }
   }
+
+  backend "s3" {
+    endpoint = "s3.yandexcloud.net"
+    bucket = "tfstate-develop-beatl"
+    region = "ru-central1"
+    key = "terraform.tfstate"
+    skip_region_validation = true
+    skip_credentials_validation = true
+    encrypt = false
+    dynamodb_endpoint = "https://docapi.serverless.yandexcloud.net/ru-central1/b1g67o4e6mtmogm6m0l2/etnacs3auccru7hoflov"
+    dynamodb_table = "tfstate-develop"
+  }
+
   required_version = ">=0.13"
 }
 
@@ -13,9 +26,10 @@ provider "yandex" {
   folder_id = var.folder_id
   zone      = var.default_zone
 }
-
+/*
 provider "vault" {
  address = "http://localhost:8200"
  skip_tls_verify = true
  token = "education"
 }
+*/

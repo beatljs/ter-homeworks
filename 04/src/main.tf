@@ -1,5 +1,5 @@
 #создаем облачную сеть
-/*resource "yandex_vpc_network" "develop" {
+resource "yandex_vpc_network" "develop" {
   name = "develop"
 }
 
@@ -11,7 +11,7 @@ resource "yandex_vpc_subnet" "develop" {
   v4_cidr_blocks = ["10.0.1.0/24"]
   }
 
-module "mysql_cl" {
+/* module "mysql_cl" {
   source = "./modules/my_claster"
   is_one = false
   cl_params = {
@@ -29,15 +29,15 @@ module "my_db_and_user" {
     claster_id = module.mysql_cl.out_claster_id
   }
 
-}
+}*/
 
 
 module "test-vm" {
   source          = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=main"
   env_name        = "develop"
-  network_id      = module.test_net.mod_net_id
+  network_id      = yandex_vpc_network.develop.id
   subnet_zones    = ["ru-central1-a"]
-  subnet_ids      = [ module.test_net.mod_subnet_id ]
+  subnet_ids      = [ yandex_vpc_subnet.develop.id ]
   instance_name   = "web"
   instance_count  = 1
   image_family    = "ubuntu-2004-lts"
@@ -57,8 +57,8 @@ data "template_file" "cloudinit" {
     auth_key2 = file("~/.ssh/id_rsa.pub")
   }
 }
-*/
 
+/*
 data "vault_generic_secret" "vault_example"{
  path = "secret/example"
 }
@@ -77,3 +77,5 @@ EOT
 output "vault_example" {
  value = "${nonsensitive(data.vault_generic_secret.vault_example.data)}"
 }
+
+*/
