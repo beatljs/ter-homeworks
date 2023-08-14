@@ -24,6 +24,45 @@ variable "default_zone" {
   default     = "ru-central1-a"
   description = "https://cloud.yandex.ru/docs/overview/concepts/geo-scope"
 }
+
+variable "ip_address" {
+    type          = string
+    default       = "192.168.0.1"
+    description   = "IP address must be correct"
+    validation {
+        condition = can(regex("^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",var.ip_address))
+        error_message = "Given IP address is invalid."
+    }
+}
+
+variable "ip_addresses" {
+  type = list(string)
+  default = ["192.168.0.1", "1.1.1.1", "127.0.0.1"]
+  validation {
+    condition = alltrue([
+      for a in var.ip_addresses : can(regex("^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",a))
+    ])
+    error_message = "All elements must be valid IP addresses."
+  }
+}
+
+variable "in_the_end_there_can_be_only_one" {
+    description="Who is better Connor or Duncan?"
+    type = object({
+        Dunkan = optional(bool)
+        Connor = optional(bool)
+    })
+
+    default = {
+        Dunkan = true
+        Connor = true
+    }
+
+    validation {
+        error_message = "There can be only one MacLeod"
+        condition = (var.in_the_end_there_can_be_only_one.Connor != var.in_the_end_there_can_be_only_one.Dunkan)
+    }
+}
 /*variable "default_cidr" {
   type        = list(string)
   default     = ["10.0.1.0/24"]
