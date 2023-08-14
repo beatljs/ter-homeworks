@@ -1,7 +1,16 @@
 terraform {
   required_providers {
     yandex = {
-      source = "yandex-cloud/yandex"
+      source  = "yandex-cloud/yandex"
+      version = "~>0.90"
+    }
+    template = {
+      source  = "hashicorp/template"
+      version = "~> 2"
+    }
+    vault = {
+      source  = "hashicorp/vault"
+      version = "~> 2"
     }
   }
 
@@ -26,10 +35,9 @@ provider "yandex" {
   folder_id = var.folder_id
   zone      = var.default_zone
 }
-/*
+
 provider "vault" {
  address = "http://localhost:8200"
  skip_tls_verify = true
- token = "education"
+ token = var.vault_token
 }
-*/

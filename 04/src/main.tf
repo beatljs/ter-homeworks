@@ -33,7 +33,7 @@ module "my_db_and_user" {
 
 
 module "test-vm" {
-  source          = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=main"
+  source          = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=1.0.0"
   env_name        = "develop"
   network_id      = yandex_vpc_network.develop.id
   subnet_zones    = ["ru-central1-a"]
@@ -58,7 +58,7 @@ data "template_file" "cloudinit" {
   }
 }
 
-/*
+
 data "vault_generic_secret" "vault_example"{
  path = "secret/example"
 }
@@ -75,7 +75,6 @@ EOT
 }
 
 output "vault_example" {
- value = "${nonsensitive(data.vault_generic_secret.vault_example.data)}"
+ value = nonsensitive(data.vault_generic_secret.vault_example.data)
 }
 
-*/
